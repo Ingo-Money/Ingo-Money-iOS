@@ -1,0 +1,85 @@
+name: Validate package
+
+# Proves an UNAUTHENTICATED consumer can resolve + checksum-verify the published package (no token, no
+# ~/.netrc), that it BUILDS + links for iOS (which also proves Mitek's MiSnap/MiSnapUX products vend the
+# full MiSnap framework closure), and that the Ingo binaries are genuinely Ingo-signed. This is the
+# public-repo counterpart to Ingo's internal release pipeline (which builds/signs/publishes) and drives the
+# "Validate" badge in the README. On-device launch is exercised separately by the SDK's distribution sample.
+
+on:
+  # NOTE: intentionally NOT triggered on `push`. The publish tooling pushes the manifest to `main`
+  # BEFORE `gh release create`, so a push-triggered run would resolve before the release assets exist
+  # and 404. `release: published` fires only after the release + its assets are created.
+  release:
+    types: [published]
+  workflow_dispatch:
+  schedule:
+    - cron: '0 14 * * 1'  # weekly, Mondays 14:00 UTC — catches drift in the upstream MiSnap package
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  resolve:
+    name: Anonymous resolve + integrity
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        # Pinned to a commit rather than a movable tag. Bump the SHA and the version note together.
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
+
+      - name: Toolchain
+        run: |
+          swift --version
+          xcodebuild -version || true
+
+      - name: Anonymous resolve (no credentials)
+        run: |
+          # A clean checkout with no injected credentials: resolving must succeed purely over public
+          # HTTPS/git — this is exactly the partner path. Downloads + checksum-verifies the binary targets.
+          swift package resolve
+
+      - name: Manifest is structurally valid
+        run: swift package dump-package > /dev/null
+
+      - name: Build + link for iOS (materializes binary targets, proves the MiSnap closure)
+        run: |
+          # `resolve` verifies checksums but does not reliably extract remote binaryTargets for inspection,
+          # and never link-checks the graph. A real iOS build does both: it materializes every xcframework
+          # AND proves Mitek's `MiSnap`/`MiSnapUX` products transitively vend the whole MiSnap framework
+          # closure (MiSnapScience / MobileFlow / MiSnapAssetManager) — the top consumer-facing risk. Runs
+          # on `release: published`, when the Release assets the manifest points at already exist.
+          set -o pipefail
+          xcodebuild build \
+            -scheme IngoMoneySDK \
+            -destination 'generic/platform=iOS' \
+            -clonedSourcePackagesDirPath .spm \
+            CODE_SIGNING_ALLOWED=NO | tail -n 100
+
+      - name: Verify Ingo binaries are code-signed by Ingo (Team 9WZPUM527Q)
+        run: |
+          set -euo pipefail
+          checked=0
+          for name in IngoSharedSdk IngoSdk IngoSdkUx IngoCoreUx; do
+            # After the build the binaries are materialized under the cloned SPM dir (xcodebuild) or
+            # .build/artifacts (swift package resolve) — search both.
+            xc="$(find .spm/artifacts .build/artifacts -type d -name "$name.xcframework" 2>/dev/null | head -1)"
+            if [ -z "$xc" ]; then
+              echo "::error::$name.xcframework was not materialized by the build — cannot verify its signature"
+              exit 1
+            fi
+            echo "verifying signature: $name ($xc)"
+            codesign --verify --deep --strict \
+              -R '=anchor apple generic and certificate leaf[subject.OU]="9WZPUM527Q"' "$xc"
+            checked=$((checked + 1))
+          done
+          echo "signature-verified $checked Ingo framework(s)"
+          # Floor assertion: the badge must never go green having verified nothing.
+          if [ "$checked" -ne 4 ]; then
+            echo "::error::expected 4 Ingo frameworks signature-verified, got $checked"
+            exit 1
+          fi
