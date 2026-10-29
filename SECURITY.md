@@ -13,8 +13,8 @@ Please do not include real credentials, customer data, tokens, or license keys i
 
 ## Supported versions
 
-Security fixes are provided for the current supported line only. `7.4.0` is the supported line; versions
-before `7.4.0` are no longer supported. Upgrade to the latest release to receive fixes.
+Security fixes are provided for the current supported line only. `7.4.1` is the supported release;
+versions before `7.4.1` are no longer supported. Upgrade to the latest release to receive fixes.
 
 ## Verifying what you resolved
 

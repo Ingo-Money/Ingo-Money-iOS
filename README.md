@@ -1,7 +1,8 @@
 # Ingo Money iOS SDK
 
 [![Release](https://img.shields.io/github/v/release/Ingo-Money/Ingo-Money-iOS?sort=semver&label=release&color=2ea043)](https://github.com/Ingo-Money/Ingo-Money-iOS/releases/latest)
-[![Swift](https://img.shields.io/badge/Swift-5.10%2B-F05138?logo=swift&logoColor=white)](https://swift.org)
+[![Swift](https://img.shields.io/badge/Swift-5%20%7C%206-F05138?logo=swift&logoColor=white)](https://swift.org)
+[![Xcode](https://img.shields.io/badge/Xcode-26.2%2B-147EFB?logo=xcode&logoColor=white)](https://developer.apple.com/xcode/)
 [![Platform](https://img.shields.io/badge/platform-iOS%2015%2B-1575F9?logo=apple&logoColor=white)](https://developer.apple.com/ios/)
 [![SPM](https://img.shields.io/badge/Swift_Package_Manager-compatible-2ea043?logo=swift&logoColor=white)](https://www.swift.org/package-manager/)
 [![Documentation](https://img.shields.io/badge/docs-DocC-8A2BE2?logo=readthedocs&logoColor=white)](https://ingo-money.github.io/Ingo-Money-iOS/documentation/ingosdk)
@@ -16,7 +17,7 @@ The official Swift package for the Ingo Money iOS SDK — Ingo's mobile check-ca
 | --- | --- |
 | Platforms | iOS 15.0+ |
 | Xcode | 26.2+ |
-| Swift | 5.10+ |
+| Swift language mode | 5 or 6 |
 
 ## Installation
 
@@ -29,7 +30,7 @@ https://github.com/Ingo-Money/Ingo-Money-iOS
 Or in `Package.swift`:
 
 ```swift
-.package(url: "https://github.com/Ingo-Money/Ingo-Money-iOS.git", from: "7.4.0"),
+.package(url: "https://github.com/Ingo-Money/Ingo-Money-iOS.git", from: "7.4.1"),
 ```
 
 Then add the **`IngoMoneySDK`** product to your app target.

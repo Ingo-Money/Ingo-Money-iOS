@@ -7,8 +7,8 @@
 import PackageDescription
 
 // Version and the matching GitHub Releases download base are set for each release.
-let v = "7.4.0"
-let base = "https://github.com/Ingo-Money/Ingo-Money-iOS/releases/download/7.4.0"
+let v = "7.4.1"
+let base = "https://github.com/Ingo-Money/Ingo-Money-iOS/releases/download/7.4.1"
 
 // FraudForce is a vendored third-party binary (TransUnion / iovation) with its own release lineage, so
 // its asset is published under its OWN version (e.g. 5.9.0), not the SDK release version `v`. Kept as a
@@ -42,11 +42,11 @@ let package = Package(
     ],
     targets: [
         // Ingo binary frameworks — checksum-verified GitHub Release assets, downloaded anonymously.
-        .binaryTarget(name: "IngoSharedSdk", url: "\(base)/IngoSharedSdk-\(v).xcframework.zip", checksum: "cb71e7de51f98ce15d8d056268a1d1169d4e96be44f03b4451d4bd6ea3d7ae26"),
-        .binaryTarget(name: "IngoCoreUx",    url: "\(base)/IngoCoreUx-\(v).xcframework.zip",    checksum: "7fe02eeffbb1b0b3eece071a508f6447c3ab2902369646a9d806d83150bd4285"),
-        .binaryTarget(name: "IngoSdkUx",     url: "\(base)/IngoSdkUx-\(v).xcframework.zip",     checksum: "4a2fd4d8afbdc9e8daec6509039ec08dc41be59dc7f2d5a8904189878a5d0d14"),
-        .binaryTarget(name: "IngoSdk",       url: "\(base)/IngoSdk-\(v).xcframework.zip",       checksum: "392422729165ea220f06d7d4dd0168c4477e4dd8cf63b81dadf4c369dfdd4a39"),
-        .binaryTarget(name: "FraudForce",    url: "\(base)/FraudForce-\(fraudForceVersion).xcframework.zip", checksum: "e1ef5c019eb9c7293cd522d5c26c02aa4c77c1e337b72945202106c9ae100e32"),
+        .binaryTarget(name: "IngoSharedSdk", url: "\(base)/IngoSharedSdk-\(v).xcframework.zip", checksum: "11374324aedba821f439a8ef42aa7717ab1c8cdfaca5d6690df00ec0ff33c8ef"),
+        .binaryTarget(name: "IngoCoreUx",    url: "\(base)/IngoCoreUx-\(v).xcframework.zip",    checksum: "1f3cadc5687203b8776354bfd2711472ef6d2e5f73472e64d09c7f5857b73ca5"),
+        .binaryTarget(name: "IngoSdkUx",     url: "\(base)/IngoSdkUx-\(v).xcframework.zip",     checksum: "5c577315e4599b76ada1115a65e814bb69f54c74893cc6fadfeb1a1c57014308"),
+        .binaryTarget(name: "IngoSdk",       url: "\(base)/IngoSdk-\(v).xcframework.zip",       checksum: "ac4174897314ceb4146daace6decf2d03ea7718dbb7886085e3cf8544f3eaf5a"),
+        .binaryTarget(name: "FraudForce",    url: "\(base)/FraudForce-\(fraudForceVersion).xcframework.zip", checksum: "5e15b7165536948864aefacc50c2ddb850c2869a7a544f5cf645f4f45c1f9f4e"),
 
         // Links MiSnap alongside the Ingo binaries (a binary target can't declare dependencies of its
         // own). You never import this module directly — `import IngoSdk`.
